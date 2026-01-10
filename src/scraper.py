@@ -66,6 +66,9 @@ class AmazonScraper:
 
     async def _create_context(self):
         """Create a new browser context with random settings."""
+        if not self.browser:
+            raise RuntimeError("Browser not initialized. Call setup_browser() first.")
+
         user_agent = self.user_agents[randint(0, len(self.user_agents) - 1)]
 
         context = await self.browser.new_context(

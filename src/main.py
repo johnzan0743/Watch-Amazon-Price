@@ -4,6 +4,7 @@ import os
 import sys
 from pathlib import Path
 from random import uniform
+from typing import Optional
 from dotenv import load_dotenv
 
 from src.config import load_products, load_price_history, save_price_history
@@ -32,7 +33,7 @@ def get_env_var(name: str, required: bool = True) -> str:
 async def main(
     dry_run: bool = True,
     test_email: bool = False,
-    product_filter: str = None
+    product_filter: Optional[str] = None
 ):
     """Main orchestration function."""
     logger.info("=" * 60)
