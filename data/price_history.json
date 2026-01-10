@@ -23,5 +23,41 @@
       "timestamp": "2026-01-10T14:35:58.575087+11:00"
     },
     "last_checked": "2026-01-10T18:06:49.738330+11:00"
+  },
+  "bose-qc-ultra-2-driftwood-sand": {
+    "name": "bose quietcomfort ultra 2 driftwood sand",
+    "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKQ2FG6",
+    "price_history": [
+      {
+        "timestamp": "2026-01-10T19:42:18.948618+11:00",
+        "price": 594.96,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/bose-qc-ultra-2-driftwood-sand_20260110_194218.png"
+      }
+    ],
+    "all_time_low": {
+      "price": 594.96,
+      "timestamp": "2026-01-10T19:42:18.948618+11:00"
+    },
+    "last_checked": "2026-01-10T19:42:18.948618+11:00"
+  },
+  "bose-qc-ultra-2-white-smoke": {
+    "name": "bose quietcomfort ultra 2 white smoke",
+    "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKRX5G9",
+    "price_history": [
+      {
+        "timestamp": "2026-01-10T19:42:53.506944+11:00",
+        "price": 594.96,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/bose-qc-ultra-2-white-smoke_20260110_194253.png"
+      }
+    ],
+    "all_time_low": {
+      "price": 594.96,
+      "timestamp": "2026-01-10T19:42:53.506944+11:00"
+    },
+    "last_checked": "2026-01-10T19:42:53.506944+11:00"
   }
 }
