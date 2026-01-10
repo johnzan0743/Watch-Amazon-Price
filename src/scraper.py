@@ -169,11 +169,33 @@ class AmazonScraper:
             # Random wait to appear more human-like
             await asyncio.sleep(uniform(2.0, 5.0))
 
+            # Check for "Continue shopping" bot detection page
+            continue_button = await page.query_selector('input[type="submit"][value="Continue shopping"], button:has-text("Continue shopping")')
+            if continue_button:
+                print("Detected 'Continue shopping' button - clicking to proceed...")
+                await continue_button.click()
+                await page.wait_for_load_state('networkidle', timeout=15000)
+                await asyncio.sleep(uniform(1.0, 2.0))
+
             # Wait for price element (or timeout)
             try:
-                await page.wait_for_selector('.a-price, #priceblock_ourprice', timeout=10000)
+                await page.wait_for_selector('.a-price, #priceblock_ourprice', timeout=15000)
+                print("✓ Price element found")
             except PlaywrightTimeout:
-                print(f"Price element not found quickly, continuing anyway...")
+                print("⚠️  Price element not found within timeout")
+                # Check if we're still on a bot detection page
+                page_title = await page.title()
+                page_content = await page.content()
+                if 'robot' in page_title.lower() or 'continue shopping' in page_content.lower():
+                    screenshot_path = await self.capture_screenshot(page, f"{product_id}_blocked")
+                    await context.close()
+                    return PriceData(
+                        price=None,
+                        currency="AUD",
+                        available=False,
+                        screenshot_path=screenshot_path,
+                        error="Amazon bot detection - unable to bypass"
+                    )
 
             # Extract price
             price = await self._extract_price(page)
