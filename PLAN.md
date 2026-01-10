@@ -173,7 +173,6 @@ Watch-Amazon-Price/
 - `--dry-run`: Don't commit or send emails
 - `--test-email`: Send test email only
 - `--product <id>`: Process single product
-- `--init`: Initialize mode (first run)
 
 ### 7. GitHub Actions Workflow (.github/workflows/price-check.yml)
 ```yaml
@@ -286,11 +285,7 @@ python src/main.py --test-email
 # 4. Test full run (dry run - no commit/email)
 python src/main.py --dry-run
 
-# 5. Test initialization (first run scenario)
-rm data/price_history.json
-python src/main.py --init
-
-# 6. Test normal run (with commit and email)
+# 5. Test normal run (with commit and email)
 python src/main.py
 ```
 

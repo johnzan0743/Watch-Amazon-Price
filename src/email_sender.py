@@ -9,9 +9,11 @@ from typing import Optional
 from src.timezone_utils import parse_timestamp
 from src.config import Product
 from src.price_tracker import PriceStats
+from src.logger import get_logger
 
 
 PROJECT_ROOT = Path(__file__).parent.parent
+logger = get_logger()
 
 
 class EmailSender:
@@ -238,7 +240,7 @@ class EmailSender:
                         image.add_header('Content-Disposition', 'inline', filename=full_path.name)
                         msg.attach(image)
                 else:
-                    print(f"Warning: Screenshot not found: {full_path}")
+                    logger.warning(f"Screenshot not found: {full_path}")
 
             # Connect to Gmail SMTP server
             with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
@@ -246,11 +248,11 @@ class EmailSender:
                 server.login(self.gmail_address, self.gmail_app_password)
                 server.send_message(msg)
 
-            print(f"✓ Email sent to {to}: {subject}")
+            logger.info(f"✓ Email sent to {to}: {subject}")
             return True
 
         except Exception as e:
-            print(f"✗ Failed to send email: {e}")
+            logger.error(f"✗ Failed to send email: {e}")
             return False
 
     def send_all_time_low_alert(

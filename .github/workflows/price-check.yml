@@ -47,6 +47,15 @@ jobs:
         run: |
           uv run python -m src.main
 
+      - name: Upload logs as artifacts
+        if: always()  # Upload logs even if previous steps failed
+        uses: actions/upload-artifact@v4
+        with:
+          name: price-checker-logs-${{ github.run_number }}
+          path: logs/
+          retention-days: 30
+          if-no-files-found: warn
+
       - name: Commit and push price history updates
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"

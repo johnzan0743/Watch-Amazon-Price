@@ -9,25 +9,11 @@
         "currency": "AUD",
         "available": true,
         "screenshot": "screenshots/bose-qc-ultra-2-black_20260110_145402.png"
-      },
-      {
-        "timestamp": "2026-01-10T14:44:08.750458+11:00",
-        "price": 594.96,
-        "currency": "AUD",
-        "available": true,
-        "screenshot": "screenshots/bose-qc-ultra-2-black_20260110_144408.png"
-      },
-      {
-        "timestamp": "2026-01-10T03:35:58.575087Z",
-        "price": 594.96,
-        "currency": "AUD",
-        "available": true,
-        "screenshot": "screenshots/bose-qc-ultra-2-black_20260110_033558.png"
       }
     ],
     "all_time_low": {
       "price": 594.96,
-      "timestamp": "2026-01-10T03:35:58.575087Z"
+      "timestamp": "2026-01-10T14:35:58.575087+11:00"
     },
     "last_checked": "2026-01-10T14:54:02.805976+11:00"
   }

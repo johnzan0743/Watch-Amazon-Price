@@ -3,9 +3,13 @@ from datetime import datetime
 from typing import Dict, List, Optional
 
 from src.timezone_utils import get_sydney_timestamp, sydney_now_minus, parse_timestamp
+from src.logger import get_logger
 
 from src.config import ProductHistory, PriceRecord, Product
 from src.scraper import PriceData
+
+
+logger = get_logger()
 
 
 @dataclass
@@ -28,6 +32,34 @@ class PriceTracker:
     def __init__(self, history: Dict[str, ProductHistory]):
         self.history = history
 
+    def _deduplicate_by_day(self, records: List[PriceRecord]) -> List[PriceRecord]:
+        """
+        Deduplicate price records by keeping only the lowest price per day.
+
+        Args:
+            records: List of PriceRecord objects
+
+        Returns:
+            List of PriceRecord objects with one entry per day (the lowest price)
+        """
+        from collections import defaultdict
+
+        # Group records by date
+        records_by_date = defaultdict(list)
+        for record in records:
+            date = parse_timestamp(record.timestamp).date()
+            records_by_date[date].append(record)
+
+        # Pick the lowest price for each date
+        deduplicated = []
+        for date in sorted(records_by_date.keys(), reverse=True):
+            day_records = records_by_date[date]
+            # Find record with lowest price for this day
+            lowest_record = min(day_records, key=lambda r: r.price)
+            deduplicated.append(lowest_record)
+
+        return deduplicated
+
     def update_price_history(
         self,
         product: Product,
@@ -44,7 +76,7 @@ class PriceTracker:
 
         # If price is None or product unavailable, skip update
         if price_data.price is None or not price_data.available:
-            print(f"Skipping price update for {product.id}: price={price_data.price}, available={price_data.available}")
+            logger.debug(f"Skipping price update for {product.id}: price={price_data.price}, available={price_data.available}")
             return False
 
         # Create new price record
@@ -68,7 +100,7 @@ class PriceTracker:
                 },
                 last_checked=timestamp
             )
-            print(f"Initialized price history for {product.id} with baseline price ${price_data.price}")
+            logger.info(f"Initialized price history for {product.id} with baseline price ${price_data.price}")
             return False  # First entry is not a "new" ATL
 
         # Get existing history
@@ -78,6 +110,8 @@ class PriceTracker:
         product_history.last_checked = timestamp
 
         # Add new record to history (prepend to keep newest first)
+        # Note: We keep ALL records, including multiple per day, to preserve
+        # historical low prices. Deduplication happens during report generation.
         product_history.price_history.insert(0, new_record)
 
         # Check if this is a new all-time low
@@ -89,7 +123,7 @@ class PriceTracker:
                 "price": price_data.price,
                 "timestamp": timestamp
             }
-            print(f"🎉 New all-time low for {product.id}: ${price_data.price} (was ${current_atl})")
+            logger.info(f"🎉 New all-time low for {product.id}: ${price_data.price} (was ${current_atl})")
 
         return is_new_atl
 
@@ -118,22 +152,25 @@ class PriceTracker:
         )
         previous_low = sorted_prices[1] if len(sorted_prices) > 1 else atl["price"]
 
-        # Calculate 30-day average
+        # Calculate 30-day average (deduplicated: one lowest price per day)
         thirty_days_ago = sydney_now_minus(days=30)
-        recent_prices = [
-            record.price
+        recent_records = [
+            record
             for record in product_history.price_history
             if record.available and parse_timestamp(record.timestamp) > thirty_days_ago
         ]
+        deduplicated_30_day = self._deduplicate_by_day(recent_records)
+        recent_prices = [record.price for record in deduplicated_30_day]
         avg_30_day = sum(recent_prices) / len(recent_prices) if recent_prices else None
 
-        # Get last 7 days of price history
+        # Get last 7 days of price history (deduplicated: one lowest price per day)
         seven_days_ago = sydney_now_minus(days=7)
-        price_history_7_day = [
+        records_7_day = [
             record
             for record in product_history.price_history
             if parse_timestamp(record.timestamp) > seven_days_ago
-        ][:7]  # Limit to 7 entries
+        ]
+        price_history_7_day = self._deduplicate_by_day(records_7_day)[:7]
 
         # Calculate savings percentage
         savings_percentage = 0.0

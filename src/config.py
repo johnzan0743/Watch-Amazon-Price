@@ -3,9 +3,12 @@ import os
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
+
+from src.logger import get_logger
 
 
+logger = get_logger()
 PROJECT_ROOT = Path(__file__).parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
 PRODUCTS_FILE = DATA_DIR / "products.json"
@@ -60,7 +63,7 @@ class ProductHistory:
     name: str
     url: str
     price_history: List[PriceRecord]
-    all_time_low: Optional[Dict[str, any]]
+    all_time_low: Optional[Dict[str, Any]]
     last_checked: str
 
     @classmethod
@@ -100,7 +103,7 @@ def load_products() -> List[Product]:
             product = Product(**product_data)
             products.append(product)
         except (TypeError, ValueError) as e:
-            print(f"Warning: Skipping invalid product: {e}")
+            logger.warning(f"Skipping invalid product: {e}")
             continue
 
     return products
@@ -119,7 +122,7 @@ def load_price_history() -> Dict[str, ProductHistory]:
         try:
             history[product_id] = ProductHistory.from_dict(product_data)
         except (TypeError, KeyError) as e:
-            print(f"Warning: Skipping invalid history for {product_id}: {e}")
+            logger.warning(f"Skipping invalid history for {product_id}: {e}")
             continue
 
     return history

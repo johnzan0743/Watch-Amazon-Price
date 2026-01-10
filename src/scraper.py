@@ -7,8 +7,12 @@ from typing import Optional
 from random import randint, uniform
 
 from src.timezone_utils import get_sydney_now
+from src.logger import get_logger
 
 from playwright.async_api import async_playwright, Browser, Page, TimeoutError as PlaywrightTimeout
+
+
+logger = get_logger()
 
 
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -115,7 +119,7 @@ class AmazonScraper:
                     if price is not None and price > 0:
                         return price
             except Exception as e:
-                print(f"Error with selector {selector}: {e}")
+                logger.debug(f"Error with selector {selector}: {e}")
                 continue
 
         return None
@@ -143,7 +147,11 @@ class AmazonScraper:
         return True
 
     async def capture_screenshot(self, page: Page, product_id: str) -> str:
-        """Capture screenshot of product page."""
+        """Capture screenshot of product page.
+
+        Returns:
+            Relative path string (e.g., "screenshots/product-id_20260110_120000.png")
+        """
         timestamp = get_sydney_now().strftime('%Y%m%d_%H%M%S')
         filename = f"{product_id}_{timestamp}.png"
         screenshot_path = SCREENSHOTS_DIR / filename
@@ -157,7 +165,8 @@ class AmazonScraper:
             type='png',
         )
 
-        return f"screenshots/{filename}"
+        # Return relative path as string (used in JSON storage and email paths)
+        return str(screenshot_path.relative_to(PROJECT_ROOT))
 
     async def scrape_price(self, product_url: str, product_id: str, retry: bool = True) -> PriceData:
         """Scrape price from Amazon product page."""
@@ -169,7 +178,7 @@ class AmazonScraper:
 
         try:
             # Navigate to product page
-            print(f"Navigating to {product_url}")
+            logger.debug(f"Navigating to {product_url}")
             await page.goto(product_url, wait_until='networkidle', timeout=30000)
 
             # Random wait to appear more human-like
@@ -178,7 +187,7 @@ class AmazonScraper:
             # Check for "Continue shopping" bot detection page
             continue_button = await page.query_selector('input[type="submit"][value="Continue shopping"], button:has-text("Continue shopping")')
             if continue_button:
-                print("Detected 'Continue shopping' button - clicking to proceed...")
+                logger.info("Detected 'Continue shopping' button - clicking to proceed...")
                 await continue_button.click()
                 await page.wait_for_load_state('networkidle', timeout=15000)
                 await asyncio.sleep(uniform(1.0, 2.0))
@@ -189,8 +198,8 @@ class AmazonScraper:
                 delivery_location = await page.query_selector('#glow-ingress-line2, #nav-global-location-popover-link')
                 if delivery_location:
                     location_text = await delivery_location.inner_text()
-                    print(f"Current delivery location: {location_text}")
-                    print("Setting delivery location to Sydney 2000...")
+                    logger.debug(f"Current delivery location: {location_text}")
+                    logger.debug("Setting delivery location to Sydney 2000...")
                     await delivery_location.click()
 
                     # Wait for the location modal to appear
@@ -202,19 +211,19 @@ class AmazonScraper:
                     for selector in ['#GLUXPostalCodeWithCity_PostalCodeInput']:
                         postcode_input = await page.query_selector(selector)
                         if postcode_input and await postcode_input.is_visible():
-                            print(f"Found postcode input with selector: {selector}")
+                            logger.debug(f"Found postcode input with selector: {selector}")
                             # Clear any existing value first
                             await postcode_input.focus()
                             await asyncio.sleep(0.2)
                             await postcode_input.fill('')  # Clear field
                             await asyncio.sleep(0.1)
-                            
+
                             # Type postcode character by character like a human
-                            print("Typing postcode: 2-0-0-0...")
+                            logger.debug("Typing postcode: 2-0-0-0...")
                             for char in '2000':
                                 await postcode_input.type(char, delay=uniform(1000, 2500))  # Random delay between keystrokes
-                            
-                            print("✓ Postcode entered, waiting for validation...")
+
+                            logger.debug("✓ Postcode entered, waiting for validation...")
                             await asyncio.sleep(uniform(0.5, 1.0))
                             postcode_filled = True
                             break
@@ -222,62 +231,62 @@ class AmazonScraper:
                     if postcode_filled:
                         # Select city from dropdown (validation happens automatically with character-by-character typing)
                         try:
-                            print("Selecting city from dropdown...")
-                            
+                            logger.debug("Selecting city from dropdown...")
+
                             # Brief wait for dropdown to be ready (typing already triggered validation)
                             await asyncio.sleep(uniform(0.8, 1.2))
-                            
+
                             # Click the dropdown button to open city list
                             city_dropdown = await page.query_selector('#GLUXPostalCodeWithCity_DropdownButton')
                             if city_dropdown:
                                 await city_dropdown.click()
-                                print("✓ Clicked dropdown to open city list")
+                                logger.debug("✓ Clicked dropdown to open city list")
                                 await asyncio.sleep(uniform(0.5, 0.8))
-                                
+
                                 # Wait for dropdown options to appear
                                 await page.wait_for_selector('a.a-dropdown-link', timeout=3000)
-                                
+
                                 # Find and click "SYDNEY" option (exact match, not "SYDNEY SOUTH")
                                 all_options = await page.query_selector_all('a.a-dropdown-link')
                                 for option in all_options:
                                     text = await option.inner_text()
                                     if text.strip() == "SYDNEY":
                                         await option.click()
-                                        print("✓ Selected SYDNEY from dropdown")
+                                        logger.debug("✓ Selected SYDNEY from dropdown")
                                         await asyncio.sleep(0.5)
                                         break
                             else:
-                                print("Could not find city dropdown button")
-                                
+                                logger.debug("Could not find city dropdown button")
+
                         except Exception as e:
-                            print(f"Could not select city from dropdown: {e}")
+                            logger.debug(f"Could not select city from dropdown: {e}")
                             # Continue anyway - might not always be required
 
                         # Click apply button using the correct ID
                         try:
                             apply_button = await page.query_selector('#GLUXPostalCodeWithCityApplyButton')
                             if apply_button and await apply_button.is_visible():
-                                print("Clicking apply button...")
+                                logger.debug("Clicking apply button...")
                                 await apply_button.click()
-                                print("✓ Applied Sydney 2000 delivery location")
+                                logger.debug("✓ Applied Sydney 2000 delivery location")
                                 await page.wait_for_load_state('networkidle', timeout=10000)
                                 await asyncio.sleep(uniform(1.0, 2.0))
                             else:
-                                print("Apply button not found or not visible")
+                                logger.debug("Apply button not found or not visible")
                         except Exception as e:
-                            print(f"Error clicking apply button: {e}")
+                            logger.debug(f"Error clicking apply button: {e}")
                     else:
-                        print("Could not find postcode input field")
+                        logger.debug("Could not find postcode input field")
             except Exception as e:
-                print(f"Could not change delivery location: {e}")
+                logger.debug(f"Could not change delivery location: {e}")
                 # Continue anyway - might already be set or not critical
 
             # Wait for price element (or timeout)
             try:
                 await page.wait_for_selector('.a-price, #priceblock_ourprice', timeout=15000)
-                print("✓ Price element found")
+                logger.debug("✓ Price element found")
             except PlaywrightTimeout:
-                print("⚠️  Price element not found within timeout")
+                logger.warning("⚠️  Price element not found within timeout")
                 # Check if we're still on a bot detection page
                 page_title = await page.title()
                 page_content = await page.content()
@@ -309,11 +318,11 @@ class AmazonScraper:
             )
 
         except PlaywrightTimeout as e:
-            print(f"Timeout error for {product_url}: {e}")
+            logger.error(f"Timeout error for {product_url}: {e}")
 
             # Retry once
             if retry:
-                print("Retrying after 5 seconds...")
+                logger.info("Retrying after 5 seconds...")
                 await asyncio.sleep(5)
                 return await self.scrape_price(product_url, product_id, retry=False)
 
@@ -326,7 +335,7 @@ class AmazonScraper:
             )
 
         except Exception as e:
-            print(f"Error scraping {product_url}: {e}")
+            logger.error(f"Error scraping {product_url}: {e}")
 
             return PriceData(
                 price=None,
@@ -335,13 +344,13 @@ class AmazonScraper:
                 screenshot_path="",
                 error=str(e)
             )
-        
+
         finally:
             # Always close the context, even if there was an error
             try:
                 await context.close()
             except Exception as e:
-                print(f"Warning: Error closing browser context: {e}")
+                logger.warning(f"Warning: Error closing browser context: {e}")
 
 
 async def test_scraper():
@@ -353,10 +362,10 @@ async def test_scraper():
     test_url = "https://www.amazon.com.au/dp/B0CX23V2ZK"  # Example ASIN
     result = await scraper.scrape_price(test_url, "test-product")
 
-    print(f"Price: ${result.price} {result.currency}")
-    print(f"Available: {result.available}")
-    print(f"Screenshot: {result.screenshot_path}")
-    print(f"Error: {result.error}")
+    logger.info(f"Price: ${result.price} {result.currency}")
+    logger.info(f"Available: {result.available}")
+    logger.info(f"Screenshot: {result.screenshot_path}")
+    logger.info(f"Error: {result.error}")
 
     await scraper.close()
 
