@@ -192,7 +192,7 @@ class AmazonScraper:
             if continue_button:
                 logger.info("Detected 'Continue shopping' button - clicking to proceed...")
                 await continue_button.click()
-                await page.wait_for_load_state('networkidle', timeout=15000)
+                await page.wait_for_load_state('load', timeout=15000)
                 await asyncio.sleep(uniform(1.0, 2.0))
 
             # Always set delivery location to Sydney 2000
