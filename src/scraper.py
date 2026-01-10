@@ -2,10 +2,11 @@ import asyncio
 import re
 import time
 from dataclasses import dataclass
-from datetime import datetime
 from pathlib import Path
 from typing import Optional
 from random import randint, uniform
+
+from src.timezone_utils import get_sydney_now
 
 from playwright.async_api import async_playwright, Browser, Page, TimeoutError as PlaywrightTimeout
 
@@ -138,7 +139,7 @@ class AmazonScraper:
 
     async def capture_screenshot(self, page: Page, product_id: str) -> str:
         """Capture screenshot of product page."""
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = get_sydney_now().strftime('%Y%m%d_%H%M%S')
         filename = f"{product_id}_{timestamp}.png"
         screenshot_path = SCREENSHOTS_DIR / filename
 

@@ -4,11 +4,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 from pathlib import Path
-from datetime import datetime
 from typing import Optional
 
-import pytz
-
+from src.timezone_utils import parse_timestamp
 from src.config import Product
 from src.price_tracker import PriceStats
 
@@ -26,12 +24,10 @@ class EmailSender:
         self.smtp_port = 587
 
     def _format_timestamp(self, iso_timestamp: str) -> str:
-        """Convert UTC timestamp to Australian time."""
+        """Convert timestamp to Sydney time for display."""
         try:
-            utc_time = datetime.fromisoformat(iso_timestamp.replace('Z', '+00:00'))
-            sydney_tz = pytz.timezone('Australia/Sydney')
-            local_time = utc_time.astimezone(sydney_tz)
-            return local_time.strftime('%d %b %Y %I:%M %p %Z')
+            sydney_time = parse_timestamp(iso_timestamp)
+            return sydney_time.strftime('%d %b %Y %I:%M %p %Z')
         except Exception:
             return iso_timestamp
 

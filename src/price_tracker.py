@@ -1,6 +1,8 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Dict, List, Optional
+
+from src.timezone_utils import get_sydney_timestamp, sydney_now_minus, parse_timestamp
 
 from src.config import ProductHistory, PriceRecord, Product
 from src.scraper import PriceData
@@ -38,7 +40,7 @@ class PriceTracker:
         Returns True if this is a new all-time low.
         """
         if timestamp is None:
-            timestamp = datetime.utcnow().isoformat() + "Z"
+            timestamp = get_sydney_timestamp()
 
         # If price is None or product unavailable, skip update
         if price_data.price is None or not price_data.available:
@@ -117,20 +119,20 @@ class PriceTracker:
         previous_low = sorted_prices[1] if len(sorted_prices) > 1 else atl["price"]
 
         # Calculate 30-day average
-        thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+        thirty_days_ago = sydney_now_minus(days=30)
         recent_prices = [
             record.price
             for record in product_history.price_history
-            if record.available and datetime.fromisoformat(record.timestamp.replace('Z', '+00:00')) > thirty_days_ago
+            if record.available and parse_timestamp(record.timestamp) > thirty_days_ago
         ]
         avg_30_day = sum(recent_prices) / len(recent_prices) if recent_prices else None
 
         # Get last 7 days of price history
-        seven_days_ago = datetime.utcnow() - timedelta(days=7)
+        seven_days_ago = sydney_now_minus(days=7)
         price_history_7_day = [
             record
             for record in product_history.price_history
-            if datetime.fromisoformat(record.timestamp.replace('Z', '+00:00')) > seven_days_ago
+            if parse_timestamp(record.timestamp) > seven_days_ago
         ][:7]  # Limit to 7 entries
 
         # Calculate savings percentage

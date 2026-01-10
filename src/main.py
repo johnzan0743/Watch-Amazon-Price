@@ -83,7 +83,7 @@ async def main(
         # Create a dummy product and stats for testing
         from src.config import Product, PriceRecord
         from src.price_tracker import PriceStats
-        from datetime import datetime
+        from src.timezone_utils import get_sydney_timestamp
 
         test_product = Product(
             id="test-product",
@@ -94,14 +94,14 @@ async def main(
 
         test_stats = PriceStats(
             current_price=99.99,
-            current_timestamp=datetime.utcnow().isoformat() + "Z",
+            current_timestamp=get_sydney_timestamp(),
             all_time_low=99.99,
-            all_time_low_timestamp=datetime.utcnow().isoformat() + "Z",
+            all_time_low_timestamp=get_sydney_timestamp(),
             previous_low=149.99,
             avg_30_day=129.99,
             price_history_7_day=[
                 PriceRecord(
-                    timestamp=datetime.utcnow().isoformat() + "Z",
+                    timestamp=get_sydney_timestamp(),
                     price=99.99,
                     currency="AUD",
                     available=True,
