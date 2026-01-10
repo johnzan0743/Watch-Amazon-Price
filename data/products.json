@@ -2,10 +2,24 @@
   "products": [
     {
       "id": "bose-qc-ultra-2-black",
-      "name": "bose quietcomfort ultra 2",
-      "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKR293G?crid=1KH227VK1WK5D&dib=eyJ2IjoiMSJ9.v5f6LgaMiBzIVbD2mZNaI-SCDE-yaV19lwXsSN0Nwni8gcoBimtCgG8UJu7EK-j0sKtQzPpz44cgmMfz5K8mIjOh54waLsy9qaYeY63F0k_guFIc3NDl-_MTC9HxjRX7ntv1yQW5hTDLHTVfeSMyteb09cV9LAs0_HynTewAQ7S6lFQCbIfVMnI07v4blj97pytIJ691xzKtupeIqclqIZT6KIzeTWl7PW9Zvh1KX2JEiFlhBwHiskxagbOo6WjI5SQ_DYuB_RvJPiLEqKF_5ioPTil21opDKYqbQNJ0Vxs.D9hqKs4pYqWACQwb4f--Qy4PClUfu08EhAxIzZPkAuQ&dib_tag=se&keywords=bose%2Bquietcomfort%2Bultra%2Bgen%2B2&qid=1768005412&th=1",
+      "name": "bose quietcomfort ultra 2 black",
+      "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKR293G",
       "enabled": true,
       "notes": "bose quietcomfort ultra 2 black edition"
+    },
+    {
+      "id": "bose-qc-ultra-2-driftwood-sand",
+      "name": "bose quietcomfort ultra 2 driftwood sand",
+      "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKQ2FG6",
+      "enabled": true,
+      "notes": "bose quietcomfort ultra 2 driftwood sand edition"
+    },
+    {
+      "id": "bose-qc-ultra-2-white-smoke",
+      "name": "bose quietcomfort ultra 2 white smoke",
+      "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKRX5G9",
+      "enabled": true,
+      "notes": "bose quietcomfort ultra 2 white smoke edition"
     }
   ]
 }

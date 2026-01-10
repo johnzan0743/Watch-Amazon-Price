@@ -255,6 +255,138 @@ class EmailSender:
             logger.error(f"✗ Failed to send email: {e}")
             return False
 
+    def create_batch_email_content(self, products_data: list[tuple[Product, PriceStats]]) -> str:
+        """Generate HTML email content for multiple all-time low alerts."""
+        products_html = []
+
+        for i, (product, stats) in enumerate(products_data):
+            savings_html = ""
+            if stats.savings_percentage > 0:
+                savings_html = f'<p style="color: #666; margin: 5px 0;">Previous low: ${stats.previous_low:.2f} ({stats.savings_percentage:.1f}% cheaper now!)</p>'
+
+            avg_30_day_html = ""
+            if stats.avg_30_day:
+                avg_30_day_html = f'<p style="color: #666; margin: 5px 0;">30-day average: ${stats.avg_30_day:.2f}</p>'
+
+            product_html = f"""
+            <div style="border-bottom: 2px solid #eee; padding: 25px 0; {'' if i == len(products_data) - 1 else ''}">
+                <h2 style="color: #333; margin-top: 0;">{product.name}</h2>
+
+                <div style="background: #e3f2e1; border-left: 4px solid #4CAF50; padding: 12px; margin: 15px 0; border-radius: 4px;">
+                    <strong>🏆 New All-Time Low!</strong>
+                </div>
+
+                <div style="font-size: 36px; color: #B12704; font-weight: bold; margin: 15px 0;">
+                    AUD ${stats.current_price:.2f}
+                </div>
+
+                {savings_html}
+                {avg_30_day_html}
+
+                <p style="color: #666; margin: 10px 0;">
+                    <strong>Checked:</strong> {self._format_timestamp(stats.current_timestamp)}
+                </p>
+
+                <div style="margin-top: 15px;">
+                    <a href="{product.url}" style="display: inline-block; background: #ff9900; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">
+                        View on Amazon AU →
+                    </a>
+                </div>
+            </div>
+            """
+            products_html.append(product_html)
+
+        count = len(products_data)
+        title = f"🎉 {count} Product{'s' if count > 1 else ''} Hit All-Time Low!"
+
+        html = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }}
+        .container {{
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }}
+        .header {{
+            background: linear-gradient(135deg, #ff9900 0%, #ff7700 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }}
+        .header h1 {{
+            margin: 0;
+            font-size: 28px;
+        }}
+        .content {{
+            padding: 30px 20px;
+        }}
+        .footer {{
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+            background-color: #f5f5f5;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{title}</h1>
+        </div>
+
+        <div class="content">
+            {''.join(products_html)}
+        </div>
+
+        <div class="footer">
+            Automated by Watch-Amazon-Price<br>
+            Prices checked daily at 2:00 AM UTC
+        </div>
+    </div>
+</body>
+</html>
+        """
+
+        return html.strip()
+
+    def send_batch_all_time_low_alert(
+        self,
+        products_data: list[tuple[Product, PriceStats]],
+        recipient: str
+    ) -> bool:
+        """Send consolidated all-time low price alert email for multiple products."""
+        if not products_data:
+            return False
+
+        count = len(products_data)
+        if count == 1:
+            # If only one product, use the single product email format
+            product, stats = products_data[0]
+            return self.send_all_time_low_alert(product, stats, recipient)
+
+        subject = f"🎉 {count} Products Hit All-Time Low!"
+        html_content = self.create_batch_email_content(products_data)
+
+        # Don't attach screenshots for batch emails (would be too many images)
+        return self.send_email(
+            to=recipient,
+            subject=subject,
+            html_content=html_content,
+            screenshot_path=None
+        )
+
     def send_all_time_low_alert(
         self,
         product: Product,

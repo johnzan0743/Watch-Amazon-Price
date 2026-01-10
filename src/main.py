@@ -210,22 +210,31 @@ async def main(
     if all_time_lows_detected and not dry_run:
         email_sender = EmailSender(gmail_address, gmail_app_password)
 
+        # Collect all ATL products with their stats
+        products_data = []
         for product in all_time_lows_detected:
             stats = tracker.get_price_statistics(product.id)
             if stats:
-                success = email_sender.send_all_time_low_alert(
-                    product=product,
-                    stats=stats,
-                    recipient=recipient_email
-                )
+                products_data.append((product, stats))
 
-                if not success:
-                    errors.append({
-                        "product": product.name,
-                        "error": "Failed to send email"
-                    })
+        # Send one consolidated email for all ATL products
+        if products_data:
+            count = len(products_data)
+            logger.info(f"  Sending consolidated email for {count} product{'s' if count > 1 else ''}...")
+            success = email_sender.send_batch_all_time_low_alert(
+                products_data=products_data,
+                recipient=recipient_email
+            )
+
+            if not success:
+                errors.append({
+                    "product": "batch email",
+                    "error": "Failed to send consolidated email"
+                })
+            else:
+                logger.info(f"  ✓ Consolidated email sent for {count} product{'s' if count > 1 else ''}")
     elif all_time_lows_detected and dry_run:
-        logger.info(f"  [DRY RUN] Would send {len(all_time_lows_detected)} email(s)")
+        logger.info(f"  [DRY RUN] Would send 1 consolidated email for {len(all_time_lows_detected)} product(s)")
         for product in all_time_lows_detected:
             logger.info(f"    - {product.name}")
     else:
