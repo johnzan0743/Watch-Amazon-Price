@@ -29,17 +29,15 @@ jobs:
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
-      - name: Create virtual environment and install dependencies
+      - name: Install dependencies with uv
         run: |
-          uv venv .venv
-          source .venv/bin/activate
+          uv venv
           uv pip install -e .
 
       - name: Install Playwright browsers
         run: |
-          source .venv/bin/activate
-          playwright install chromium
-          playwright install-deps chromium
+          uv run playwright install chromium
+          uv run playwright install-deps chromium
 
       - name: Run price checker
         env:
@@ -47,8 +45,7 @@ jobs:
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
         run: |
-          source .venv/bin/activate
-          python -m src.main
+          uv run python -m src.main
 
       - name: Commit and push price history updates
         run: |
@@ -56,15 +53,61 @@ jobs:
           git config --local user.name "github-actions[bot]"
 
           # Stage price history and screenshots
-          git add data/price_history.json screenshots/*.png 2>/dev/null || true
+          git add data/price_history.json 2>/dev/null || true
+          git add screenshots/ 2>/dev/null || true
 
           # Commit only if there are changes
           if git diff --staged --quiet; then
             echo "No price changes detected - nothing to commit"
           else
             TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
-            git commit -m "chore: update price history [skip ci]
+            git commit -m "chore: update price history [skip ci] - ${TIMESTAMP}"
+            git push
+          fi
 
-Updated: $TIMESTAMP"
+  cleanup-old-screenshots:
+    runs-on: ubuntu-latest
+    needs: check-prices  # Run after price check completes
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main  # Ensure we get the latest commit from check-prices job
+
+      - name: Delete screenshots older than 30 days
+        run: |
+          echo "Searching for screenshots older than 30 days..."
+
+          # Count files before deletion
+          BEFORE_COUNT=$(find screenshots -name "*.png" -type f 2>/dev/null | wc -l || echo "0")
+          echo "Total screenshots before cleanup: $BEFORE_COUNT"
+
+          # Find and delete screenshots older than 30 days
+          DELETED_COUNT=$(find screenshots -name "*.png" -type f -mtime +30 -delete -print 2>/dev/null | wc -l || echo "0")
+
+          # Count files after deletion
+          AFTER_COUNT=$(find screenshots -name "*.png" -type f 2>/dev/null | wc -l || echo "0")
+
+          echo "Screenshots deleted: $DELETED_COUNT"
+          echo "Remaining screenshots: $AFTER_COUNT"
+
+      - name: Commit screenshot cleanup
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          # Stage deleted files
+          git add screenshots/ 2>/dev/null || true
+
+          # Commit only if there are changes
+          if git diff --staged --quiet; then
+            echo "No old screenshots to clean up"
+          else
+            DELETED_FILES=$(git diff --staged --summary | grep -c "delete" || echo "0")
+            git commit -m "chore: cleanup screenshots older than 30 days [skip ci] - removed ${DELETED_FILES} file(s)"
             git push
           fi
