@@ -31,6 +31,7 @@ class AmazonScraper:
     def __init__(self, headless: bool = True):
         self.headless = headless
         self.browser: Optional[Browser] = None
+        self.playwright = None
         self.user_agents = [
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
@@ -39,9 +40,9 @@ class AmazonScraper:
 
     async def setup_browser(self):
         """Initialize Playwright browser with anti-detection settings."""
-        playwright = await async_playwright().start()
+        self.playwright = await async_playwright().start()
 
-        self.browser = await playwright.chromium.launch(
+        self.browser = await self.playwright.chromium.launch(
             headless=self.headless,
             args=[
                 '--disable-blink-features=AutomationControlled',
@@ -51,9 +52,13 @@ class AmazonScraper:
         )
 
     async def close(self):
-        """Close the browser."""
+        """Close the browser and playwright instance."""
         if self.browser:
             await self.browser.close()
+            self.browser = None
+        if self.playwright:
+            await self.playwright.stop()
+            self.playwright = None
 
     async def _create_context(self):
         """Create a new browser context with random settings."""
@@ -278,7 +283,6 @@ class AmazonScraper:
                 page_content = await page.content()
                 if 'robot' in page_title.lower() or 'continue shopping' in page_content.lower():
                     screenshot_path = await self.capture_screenshot(page, f"{product_id}_blocked")
-                    await context.close()
                     return PriceData(
                         price=None,
                         currency="AUD",
@@ -296,8 +300,6 @@ class AmazonScraper:
             # Capture screenshot
             screenshot_path = await self.capture_screenshot(page, product_id)
 
-            await context.close()
-
             return PriceData(
                 price=price,
                 currency="AUD",
@@ -308,7 +310,6 @@ class AmazonScraper:
 
         except PlaywrightTimeout as e:
             print(f"Timeout error for {product_url}: {e}")
-            await context.close()
 
             # Retry once
             if retry:
@@ -326,7 +327,6 @@ class AmazonScraper:
 
         except Exception as e:
             print(f"Error scraping {product_url}: {e}")
-            await context.close()
 
             return PriceData(
                 price=None,
@@ -335,6 +335,13 @@ class AmazonScraper:
                 screenshot_path="",
                 error=str(e)
             )
+        
+        finally:
+            # Always close the context, even if there was an error
+            try:
+                await context.close()
+            except Exception as e:
+                print(f"Warning: Error closing browser context: {e}")
 
 
 async def test_scraper():
