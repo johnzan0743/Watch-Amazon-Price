@@ -189,21 +189,41 @@ class AmazonScraper:
                     if 'australia' not in location_text.lower():
                         print("Changing delivery location to Australia...")
                         await delivery_location.click()
+
+                        # Wait for the location modal to appear
+                        await page.wait_for_selector('input[type="text"][placeholder], input[type="text"]', timeout=5000)
                         await asyncio.sleep(uniform(0.5, 1.0))
 
-                        # Enter Australian postcode in the modal
-                        postcode_input = await page.query_selector('#GLUXZipUpdateInput')
-                        if postcode_input:
-                            await postcode_input.fill('2000')  # Sydney postcode
-                            await asyncio.sleep(0.3)
+                        # Find and fill the postcode input (try multiple selectors)
+                        postcode_filled = False
+                        for selector in ['#GLUXZipUpdateInput', 'input[type="text"]', 'input[placeholder]']:
+                            postcode_input = await page.query_selector(selector)
+                            if postcode_input and await postcode_input.is_visible():
+                                print(f"Found postcode input with selector: {selector}")
+                                await postcode_input.click()
+                                await postcode_input.fill('2000')  # Sydney postcode
+                                await asyncio.sleep(0.5)
+                                postcode_filled = True
+                                break
 
-                            # Click apply button
-                            apply_button = await page.query_selector('input[aria-labelledby="GLUXZipUpdate-announce"]')
-                            if apply_button:
-                                await apply_button.click()
-                                print("Applied Australian delivery location")
-                                await page.wait_for_load_state('networkidle', timeout=10000)
-                                await asyncio.sleep(uniform(1.0, 2.0))
+                        if postcode_filled:
+                            # Click apply button (try multiple selectors)
+                            for button_selector in [
+                                'input[aria-labelledby="GLUXZipUpdate-announce"]',
+                                'button:has-text("Apply")',
+                                'input[type="submit"]',
+                                '.a-button-input'
+                            ]:
+                                apply_button = await page.query_selector(button_selector)
+                                if apply_button and await apply_button.is_visible():
+                                    print(f"Clicking apply button with selector: {button_selector}")
+                                    await apply_button.click()
+                                    print("✓ Applied Australian delivery location")
+                                    await page.wait_for_load_state('networkidle', timeout=10000)
+                                    await asyncio.sleep(uniform(1.0, 2.0))
+                                    break
+                        else:
+                            print("Could not find postcode input field")
             except Exception as e:
                 print(f"Could not change delivery location: {e}")
                 # Continue anyway - might already be set or not critical
