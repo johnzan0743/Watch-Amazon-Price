@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__filesystem__directory_tree",
+      "mcp__filesystem__list_directory",
+      "mcp__filesystem__read_text_file",
+      "mcp__git__git_log",
+      "mcp__git__git_status",
+      "Bash(git -C /Users/yuanzhuang/Claude\\\\ Projects/Watch-Amazon-Price log:*)",
+      "Bash(git -C /Users/yuanzhuang/Claude\\\\ Projects/Watch-Amazon-Price remote:*)",
+      "mcp__filesystem__write_file",
+      "Bash(source .venv/bin/activate)",
+      "Bash(uv pip install:*)",
+      "Bash(playwright install:*)"
+    ]
+  }
+}

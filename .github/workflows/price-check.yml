@@ -1,0 +1,70 @@
+name: Amazon Price Checker
+
+on:
+  schedule:
+    # Run daily at 2:00 AM UTC (approximately 12:00 PM Australian Eastern Time)
+    - cron: '0 2 * * *'
+
+  # Allow manual triggering for testing
+  workflow_dispatch:
+
+jobs:
+  check-prices:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # Required to commit price history updates
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Create virtual environment and install dependencies
+        run: |
+          uv venv .venv
+          source .venv/bin/activate
+          uv pip install -e .
+
+      - name: Install Playwright browsers
+        run: |
+          source .venv/bin/activate
+          playwright install chromium
+          playwright install-deps chromium
+
+      - name: Run price checker
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        run: |
+          source .venv/bin/activate
+          python -m src.main
+
+      - name: Commit and push price history updates
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          # Stage price history and screenshots
+          git add data/price_history.json screenshots/*.png 2>/dev/null || true
+
+          # Commit only if there are changes
+          if git diff --staged --quiet; then
+            echo "No price changes detected - nothing to commit"
+          else
+            TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+            git commit -m "chore: update price history [skip ci]
+
+Updated: $TIMESTAMP"
+            git push
+          fi
