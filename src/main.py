@@ -26,7 +26,7 @@ def get_env_var(name: str, required: bool = True) -> str:
 
 
 async def main(
-    dry_run: bool = False,
+    dry_run: bool = True,
     test_email: bool = False,
     product_filter: str = None,
     init_mode: bool = False
@@ -129,7 +129,7 @@ async def main(
 
     # Initialize browser
     print("\n[3/7] Initializing browser...")
-    scraper = AmazonScraper(headless=True)
+    scraper = AmazonScraper(headless=not dry_run)
     await scraper.setup_browser()
     print("✓ Playwright browser ready")
 

@@ -177,53 +177,91 @@ class AmazonScraper:
                 await page.wait_for_load_state('networkidle', timeout=15000)
                 await asyncio.sleep(uniform(1.0, 2.0))
 
-            # Check and change delivery location to Australia if needed
+            # Always set delivery location to Sydney 2000
             try:
                 # Look for the delivery location indicator
                 delivery_location = await page.query_selector('#glow-ingress-line2, #nav-global-location-popover-link')
                 if delivery_location:
                     location_text = await delivery_location.inner_text()
                     print(f"Current delivery location: {location_text}")
+                    print("Setting delivery location to Sydney 2000...")
+                    await delivery_location.click()
 
-                    # If not delivering to Australia, change it
-                    if 'australia' not in location_text.lower():
-                        print("Changing delivery location to Australia...")
-                        await delivery_location.click()
+                    # Wait for the location modal to appear
+                    await page.wait_for_selector('input[type="text"][placeholder], input[type="text"]', timeout=5000)
+                    await asyncio.sleep(uniform(0.5, 1.0))
 
-                        # Wait for the location modal to appear
-                        await page.wait_for_selector('input[type="text"][placeholder], input[type="text"]', timeout=5000)
-                        await asyncio.sleep(uniform(0.5, 1.0))
+                    # Find and fill the postcode input (try multiple selectors)
+                    postcode_filled = False
+                    for selector in ['#GLUXPostalCodeWithCity_PostalCodeInput']:
+                        postcode_input = await page.query_selector(selector)
+                        if postcode_input and await postcode_input.is_visible():
+                            print(f"Found postcode input with selector: {selector}")
+                            # Clear any existing value first
+                            await postcode_input.focus()
+                            await asyncio.sleep(0.2)
+                            await postcode_input.fill('')  # Clear field
+                            await asyncio.sleep(0.1)
+                            
+                            # Type postcode character by character like a human
+                            print("Typing postcode: 2-0-0-0...")
+                            for char in '2000':
+                                await postcode_input.type(char, delay=uniform(1000, 2500))  # Random delay between keystrokes
+                            
+                            print("✓ Postcode entered, waiting for validation...")
+                            await asyncio.sleep(uniform(0.5, 1.0))
+                            postcode_filled = True
+                            break
 
-                        # Find and fill the postcode input (try multiple selectors)
-                        postcode_filled = False
-                        for selector in ['#GLUXZipUpdateInput', 'input[type="text"]', 'input[placeholder]']:
-                            postcode_input = await page.query_selector(selector)
-                            if postcode_input and await postcode_input.is_visible():
-                                print(f"Found postcode input with selector: {selector}")
-                                await postcode_input.click()
-                                await postcode_input.fill('2000')  # Sydney postcode
-                                await asyncio.sleep(0.5)
-                                postcode_filled = True
-                                break
+                    if postcode_filled:
+                        # Select city from dropdown (validation happens automatically with character-by-character typing)
+                        try:
+                            print("Selecting city from dropdown...")
+                            
+                            # Brief wait for dropdown to be ready (typing already triggered validation)
+                            await asyncio.sleep(uniform(0.8, 1.2))
+                            
+                            # Click the dropdown button to open city list
+                            city_dropdown = await page.query_selector('#GLUXPostalCodeWithCity_DropdownButton')
+                            if city_dropdown:
+                                await city_dropdown.click()
+                                print("✓ Clicked dropdown to open city list")
+                                await asyncio.sleep(uniform(0.5, 0.8))
+                                
+                                # Wait for dropdown options to appear
+                                await page.wait_for_selector('a.a-dropdown-link', timeout=3000)
+                                
+                                # Find and click "SYDNEY" option (exact match, not "SYDNEY SOUTH")
+                                all_options = await page.query_selector_all('a.a-dropdown-link')
+                                for option in all_options:
+                                    text = await option.inner_text()
+                                    if text.strip() == "SYDNEY":
+                                        await option.click()
+                                        print("✓ Selected SYDNEY from dropdown")
+                                        await asyncio.sleep(0.5)
+                                        break
+                            else:
+                                print("Could not find city dropdown button")
+                                
+                        except Exception as e:
+                            print(f"Could not select city from dropdown: {e}")
+                            # Continue anyway - might not always be required
 
-                        if postcode_filled:
-                            # Click apply button (try multiple selectors)
-                            for button_selector in [
-                                'input[aria-labelledby="GLUXZipUpdate-announce"]',
-                                'button:has-text("Apply")',
-                                'input[type="submit"]',
-                                '.a-button-input'
-                            ]:
-                                apply_button = await page.query_selector(button_selector)
-                                if apply_button and await apply_button.is_visible():
-                                    print(f"Clicking apply button with selector: {button_selector}")
-                                    await apply_button.click()
-                                    print("✓ Applied Australian delivery location")
-                                    await page.wait_for_load_state('networkidle', timeout=10000)
-                                    await asyncio.sleep(uniform(1.0, 2.0))
-                                    break
-                        else:
-                            print("Could not find postcode input field")
+                        # Click apply button using the correct ID
+                        try:
+                            apply_button = await page.query_selector('#GLUXPostalCodeWithCityApplyButton')
+                            if apply_button and await apply_button.is_visible():
+                                print("Clicking apply button...")
+                                await apply_button.click()
+                                print("✓ Applied Sydney 2000 delivery location")
+                                await page.wait_for_load_state('networkidle', timeout=10000)
+                                await asyncio.sleep(uniform(1.0, 2.0))
+                            else:
+                                print("Apply button not found or not visible")
+                        except Exception as e:
+                            print(f"Error clicking apply button: {e}")
+                    else:
+                        print("Could not find postcode input field")
             except Exception as e:
                 print(f"Could not change delivery location: {e}")
                 # Continue anyway - might already be set or not critical
