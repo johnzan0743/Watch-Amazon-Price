@@ -177,6 +177,37 @@ class AmazonScraper:
                 await page.wait_for_load_state('networkidle', timeout=15000)
                 await asyncio.sleep(uniform(1.0, 2.0))
 
+            # Check and change delivery location to Australia if needed
+            try:
+                # Look for the delivery location indicator
+                delivery_location = await page.query_selector('#glow-ingress-line2, #nav-global-location-popover-link')
+                if delivery_location:
+                    location_text = await delivery_location.inner_text()
+                    print(f"Current delivery location: {location_text}")
+
+                    # If not delivering to Australia, change it
+                    if 'australia' not in location_text.lower():
+                        print("Changing delivery location to Australia...")
+                        await delivery_location.click()
+                        await asyncio.sleep(uniform(0.5, 1.0))
+
+                        # Enter Australian postcode in the modal
+                        postcode_input = await page.query_selector('#GLUXZipUpdateInput')
+                        if postcode_input:
+                            await postcode_input.fill('2000')  # Sydney postcode
+                            await asyncio.sleep(0.3)
+
+                            # Click apply button
+                            apply_button = await page.query_selector('input[aria-labelledby="GLUXZipUpdate-announce"]')
+                            if apply_button:
+                                await apply_button.click()
+                                print("Applied Australian delivery location")
+                                await page.wait_for_load_state('networkidle', timeout=10000)
+                                await asyncio.sleep(uniform(1.0, 2.0))
+            except Exception as e:
+                print(f"Could not change delivery location: {e}")
+                # Continue anyway - might already be set or not critical
+
             # Wait for price element (or timeout)
             try:
                 await page.wait_for_selector('.a-price, #priceblock_ourprice', timeout=15000)
