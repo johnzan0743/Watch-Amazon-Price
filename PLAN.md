@@ -7,20 +7,23 @@ Build a GitHub Actions workflow that checks Amazon AU prices daily, tracks price
 
 ```
 Watch-Amazon-Price/
-├── .github/workflows/price-check.yml    # Daily GHA workflow
+├── .github/workflows/
+│   ├── price-check.yml                  # Daily price checking workflow
+│   └── test-email.yml                   # Email testing workflow (manual)
 ├── src/
 │   ├── __init__.py
 │   ├── config.py                        # Load products & price history
 │   ├── scraper.py                       # Playwright scraping + screenshots
 │   ├── price_tracker.py                 # Price history & ATL detection
 │   ├── email_sender.py                  # Gmail SMTP notifications
+│   ├── timezone_utils.py                # Sydney timezone handling
+│   ├── logger.py                        # Logging configuration
 │   └── main.py                          # Main orchestration script
 ├── data/
 │   ├── products.json                    # Product list (user-editable)
 │   └── price_history.json               # Price tracking (auto-updated)
 ├── screenshots/                          # Product screenshots (committed)
-├── test/
-│   └── test_scraper.py                  # Testing scripts
+├── logs/                                 # Application logs
 ├── pyproject.toml                       # Dependencies with uv
 ├── .gitignore
 ├── README.md
@@ -174,7 +177,9 @@ Watch-Amazon-Price/
 - `--test-email`: Send test email only
 - `--product <id>`: Process single product
 
-### 7. GitHub Actions Workflow (.github/workflows/price-check.yml)
+### 7. GitHub Actions Workflows
+
+#### 7a. Price Check Workflow (.github/workflows/price-check.yml)
 ```yaml
 name: Amazon Price Checker
 on:
@@ -194,9 +199,38 @@ jobs:
       - Create .venv and install dependencies
       - Install Playwright chromium
       - Run price checker with secrets
+      - Upload logs as artifacts (30 days)
       - Commit price_history.json and screenshots
       - Push changes (with [skip ci])
+
+  cleanup-old-screenshots:
+    runs-on: ubuntu-latest
+    needs: check-prices
+    steps:
+      - Delete screenshots older than 30 days
+      - Commit cleanup
+      - Push changes (with [skip ci])
 ```
+
+#### 7b. Test Email Workflow (.github/workflows/test-email.yml)
+```yaml
+name: Test Email Sending
+on:
+  workflow_dispatch:     # Manual trigger only
+
+jobs:
+  test-email:
+    runs-on: ubuntu-latest
+    steps:
+      - Checkout code
+      - Setup Python 3.12
+      - Install uv package manager
+      - Install dependencies
+      - Run: python -m src.main --test-email
+      - Upload logs as artifacts (7 days)
+```
+
+**Purpose:** Test email delivery without running price checks. Sends a dummy test email to verify Gmail credentials and email formatting.
 
 **Environment Variables (from Secrets):**
 - `GMAIL_ADDRESS`: Sender Gmail
@@ -376,6 +410,15 @@ python src/main.py
 
 7. **All-Time Low Only**: Reduces email noise, focuses on actionable deals.
 
+## Implemented Enhancements
+
+- ✅ Screenshot cleanup automation (>30 days) - automated in workflow
+- ✅ Batch email alerts (multiple ATLs in single email)
+- ✅ Test email functionality (standalone workflow)
+- ✅ Sydney timezone handling
+- ✅ Comprehensive logging system
+- ✅ Artifact upload for debugging
+
 ## Potential Enhancements (Future)
 
 - Multiple email recipients
@@ -387,7 +430,6 @@ python src/main.py
 - Mobile app integration
 - Multi-region support (US, UK, etc.)
 - CAPTCHA solving service integration
-- Screenshot cleanup automation (>30 days)
 
 ## Maintenance Notes
 

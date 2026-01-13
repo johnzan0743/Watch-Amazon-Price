@@ -2,6 +2,8 @@
 
 Automated price monitoring for Amazon Australia products with email alerts for all-time low prices.
 
+> **Latest Update (2026-01-13):** Added test email workflow for easy verification of email delivery without running price checks. See [Testing Email Functionality](#testing-email-functionality) below.
+
 ## Features
 
 - **Daily Price Checks**: Automated GitHub Actions workflow runs once per day
@@ -88,7 +90,7 @@ python -c "from src.config import load_products; print(load_products())"
 # Test single product (dry run - no emails/commits)
 python -m src.main --product sony-headphones --dry-run
 
-# Send test email
+# Send test email (verify email delivery)
 python -m src.main --test-email
 
 # Full run (dry run)
@@ -98,24 +100,55 @@ python -m src.main --dry-run
 python -m src.main
 ```
 
+## Testing Email Functionality
+
+### GitHub Actions (Recommended)
+
+Test email functionality directly from GitHub without local setup:
+
+1. Go to **Actions** tab in your repository
+2. Select **Test Email Sending** workflow
+3. Click **Run workflow** → **Run workflow**
+4. Check your email inbox for test email
+5. Review workflow logs if needed
+
+The test email will have subject "🎉 Test Email: All-Time Low Price Alert" and shows a preview of the actual alert format.
+
+### Local Testing
+
+```bash
+# Send test email from local environment
+python -m src.main --test-email
+```
+
+This creates a dummy product with test data and sends a formatted HTML email to verify:
+- Gmail credentials are correct
+- Email delivery works
+- HTML formatting renders properly
+
 ## Project Structure
 
 ```
 Watch-Amazon-Price/
 ├── .github/workflows/
-│   └── price-check.yml          # GitHub Actions workflow
+│   ├── price-check.yml          # Daily price checking workflow
+│   └── test-email.yml           # Email testing workflow
 ├── src/
 │   ├── config.py                # Configuration loader
 │   ├── scraper.py               # Playwright scraping
 │   ├── price_tracker.py         # Price history management
 │   ├── email_sender.py          # Gmail notifications
+│   ├── timezone_utils.py        # Sydney timezone handling
+│   ├── logger.py                # Logging configuration
 │   └── main.py                  # Main orchestration
 ├── data/
 │   ├── products.json            # Product list (edit this!)
 │   └── price_history.json       # Price tracking (auto-updated)
 ├── screenshots/                 # Product screenshots
+├── logs/                        # Application logs
 ├── pyproject.toml               # Dependencies
-└── README.md                    # This file
+├── README.md                    # This file
+└── SETUP.md                     # Detailed setup guide
 ```
 
 ## Configuration
@@ -139,26 +172,70 @@ The `data/price_history.json` file is automatically managed by the script. It st
 - Screenshot paths for reference
 - Last checked timestamp
 
+## GitHub Actions Workflows
+
+### Price Check Workflow (Daily)
+
+**File:** `.github/workflows/price-check.yml`
+
+- **Schedule:** Runs daily at 2:00 AM UTC (~12:00 PM Australian Eastern Time)
+- **Manual Trigger:** Available via Actions tab
+- **Functions:**
+  - Scrapes prices for all enabled products
+  - Updates price history
+  - Sends email alerts for all-time lows
+  - Commits updates back to repository
+  - Cleans up screenshots older than 30 days
+- **Artifacts:** Uploads logs for 30 days
+
+### Test Email Workflow (Manual)
+
+**File:** `.github/workflows/test-email.yml`
+
+- **Schedule:** Manual trigger only (can be scheduled weekly if desired)
+- **Purpose:** Verify email delivery without running price checks
+- **Functions:**
+  - Sends test email with sample data
+  - Validates Gmail credentials
+  - Tests HTML email formatting
+- **Artifacts:** Uploads logs for 7 days
+
+**To run:** Actions → Test Email Sending → Run workflow
+
 ## Email Notifications
 
-Emails are sent **only when all-time lows are detected**. Each email includes:
+### When Emails Are Sent
+
+Emails are sent **only when all-time lows are detected**. First run initializes prices but won't send emails.
+
+### Email Content
+
+Each all-time low alert includes:
 
 - Current price (prominently displayed)
 - All-time low badge
 - Previous low price with savings percentage
 - Last 7 days price history table
 - 30-day average price
-- Product screenshot
+- Product screenshot (single product emails only)
 - Direct "View on Amazon" link
+
+### Batch Alerts
+
+When multiple products hit all-time lows on the same day, they're consolidated into a single email for convenience.
 
 ## Troubleshooting
 
 ### No emails received
 
-- Check GitHub Actions workflow runs for errors
-- Verify GitHub Secrets are set correctly
-- Ensure products are enabled in `products.json`
-- Check spam folder
+1. **Run the test email workflow** to verify email setup:
+   - Go to Actions → Test Email Sending → Run workflow
+   - Check your inbox/spam folder for test email
+2. Check GitHub Actions workflow runs for errors
+3. Verify GitHub Secrets are set correctly (GMAIL_ADDRESS, GMAIL_APP_PASSWORD, RECIPIENT_EMAIL)
+4. Ensure products are enabled in `products.json`
+5. Remember: First run initializes prices (no emails sent)
+6. Emails only sent for all-time lows (not every price change)
 
 ### Scraping errors
 
@@ -171,6 +248,52 @@ Emails are sent **only when all-time lows are detected**. Each email includes:
 - Check Actions tab for error logs
 - Verify all dependencies install correctly
 - Ensure Playwright chromium installs successfully
+
+## Quick Reference
+
+### GitHub Actions Workflows
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| **Amazon Price Checker** | Daily at 2:00 AM UTC<br>Manual trigger | Check all product prices, send alerts, update history |
+| **Test Email Sending** | Manual trigger only | Test email delivery without price checking |
+
+**Manual Trigger:** Actions tab → Select workflow → Run workflow
+
+### Command Line Interface
+
+| Command | Description |
+|---------|-------------|
+| `python -m src.main` | Full run (scrapes prices, sends emails, saves history) |
+| `python -m src.main --dry-run` | Preview run (no emails, no saves) |
+| `python -m src.main --test-email` | Send test email to verify delivery |
+| `python -m src.main --product PRODUCT_ID` | Check single product only |
+| `python -m src.main --product PRODUCT_ID --dry-run` | Dry run for single product |
+
+### Environment Variables
+
+Required for email functionality:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `GMAIL_ADDRESS` | Gmail account address | `yourname@gmail.com` |
+| `GMAIL_APP_PASSWORD` | Gmail app-specific password | `abcdefghijklmnop` |
+| `RECIPIENT_EMAIL` | Email to receive alerts | `recipient@example.com` |
+
+Set in:
+- GitHub: Settings → Secrets and variables → Actions
+- Local: Create `.env` file in project root
+
+### File Locations
+
+| File/Directory | Purpose | Edit? |
+|----------------|---------|-------|
+| `data/products.json` | Product tracking list | ✅ Yes - Add/remove products |
+| `data/price_history.json` | Historical price data | ❌ No - Auto-generated |
+| `screenshots/` | Product page screenshots | ❌ No - Auto-generated |
+| `logs/` | Application logs | ❌ No - Auto-generated |
+| `.env` | Local environment variables | ✅ Yes - Local testing only |
+| `.github/workflows/` | GitHub Actions config | ⚠️ Advanced users only |
 
 ## Advanced Usage
 
@@ -185,15 +308,33 @@ schedule:
 
 ### Screenshot Cleanup
 
-Screenshots accumulate over time. To clean up old screenshots:
+Screenshots are **automatically cleaned up** by the GitHub Actions workflow:
+- The `cleanup-old-screenshots` job runs after each price check
+- Deletes screenshots older than 30 days
+- Automatically commits changes to the repository
+
+Manual cleanup (if needed):
 
 ```bash
-# Delete screenshots older than 30 days
+# Delete screenshots older than 30 days locally
 find screenshots -name "*.png" -mtime +30 -delete
 git add screenshots/
 git commit -m "chore: clean up old screenshots"
 git push
 ```
+
+### Enable Weekly Email Tests
+
+To enable automatic weekly email testing, edit `.github/workflows/test-email.yml`:
+
+```yaml
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 12 * * 1'  # Weekly on Monday at 12:00 UTC
+```
+
+Uncomment the `schedule` section to run weekly tests.
 
 ## Privacy & Security
 

@@ -150,7 +150,31 @@ git push
 4. Click the green **Run workflow** button in the dropdown
 5. Wait for the workflow to complete (2-5 minutes)
 
-### Step 4: Check Results
+### Step 4: Test Email Delivery
+
+Before running the full price check, verify email functionality:
+
+1. Go to **Actions** tab
+2. Click **Test Email Sending** in the left sidebar
+3. Click **Run workflow** button (on the right)
+4. Click the green **Run workflow** button
+5. Wait for completion (30-60 seconds)
+6. **Check your email inbox** for test email with subject "🎉 Test Email: All-Time Low Price Alert"
+7. Check spam folder if not in inbox
+
+**Success:** You received the test email with formatted HTML and sample product data.
+
+**If failed:** Review workflow logs and verify GitHub Secrets are correct.
+
+### Step 5: Run First Price Check
+
+1. Go to **Actions** tab
+2. Click **Amazon Price Checker** in the left sidebar
+3. Click **Run workflow** button (on the right)
+4. Click the green **Run workflow** button
+5. Wait for the workflow to complete (2-5 minutes)
+
+### Step 6: Check Results
 
 After the workflow completes:
 
@@ -165,8 +189,7 @@ After the workflow completes:
    - Click on `data/price_history.json` to see tracked prices
 
 3. **Check for email:**
-   - If any all-time lows were detected, check your email
-   - First run initializes prices (no emails sent)
+   - First run initializes prices (no emails sent - this is expected)
    - Subsequent runs will send emails for new all-time lows
 
 ## Part 5: Local Testing (Optional)
@@ -222,10 +245,12 @@ python -m src.main
 - [ ] Gmail app password created successfully
 - [ ] Repository created on GitHub (private recommended)
 - [ ] Code pushed to GitHub
-- [ ] 3 GitHub Secrets configured
+- [ ] 3 GitHub Secrets configured (GMAIL_ADDRESS, GMAIL_APP_PASSWORD, RECIPIENT_EMAIL)
 - [ ] Products added to `data/products.json`
 - [ ] GitHub Actions enabled
-- [ ] First workflow run completed successfully
+- [ ] Test email workflow completed successfully
+- [ ] Test email received in inbox
+- [ ] First price check workflow run completed successfully
 - [ ] `price_history.json` created with initial prices
 - [ ] (Optional) Local testing works
 
@@ -250,9 +275,15 @@ python -m src.main
 
 ### No email received (but workflow succeeded)
 
-**Possible reasons:**
+**First, test email delivery:**
+1. Run the "Test Email Sending" workflow from Actions tab
+2. This will send a test email regardless of prices
+3. If test email works, your setup is correct
+4. If test email fails, check troubleshooting steps above
+
+**If test email works but no price alerts:**
 1. **First run:** First run initializes prices but doesn't send emails (expected)
-2. **No all-time lows:** Emails only sent for new all-time lows
+2. **No all-time lows:** Emails only sent for new all-time lows (not every price change)
 3. **Spam folder:** Check spam/junk folder
 4. **Wrong recipient:** Verify `RECIPIENT_EMAIL` secret
 
