@@ -1,0 +1,49 @@
+name: Test Email Sending
+
+on:
+  # Allow manual triggering for testing
+  workflow_dispatch:
+
+  # Optional: Run on schedule for periodic testing (e.g., weekly on Monday at 12:00 UTC)
+  # schedule:
+  #   - cron: '0 12 * * 1'
+
+jobs:
+  test-email:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies with uv
+        run: |
+          uv venv
+          uv pip install -e .
+
+      - name: Test email sending
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        run: |
+          uv run python -m src.main --test-email
+
+      - name: Upload logs as artifacts
+        if: always()  # Upload logs even if previous steps failed
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-email-logs-${{ github.run_number }}
+          path: logs/
+          retention-days: 7
+          if-no-files-found: warn
