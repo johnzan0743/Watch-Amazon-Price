@@ -4,6 +4,13 @@
     "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKR293G?crid=1KH227VK1WK5D&dib=eyJ2IjoiMSJ9.v5f6LgaMiBzIVbD2mZNaI-SCDE-yaV19lwXsSN0Nwni8gcoBimtCgG8UJu7EK-j0sKtQzPpz44cgmMfz5K8mIjOh54waLsy9qaYeY63F0k_guFIc3NDl-_MTC9HxjRX7ntv1yQW5hTDLHTVfeSMyteb09cV9LAs0_HynTewAQ7S6lFQCbIfVMnI07v4blj97pytIJ691xzKtupeIqclqIZT6KIzeTWl7PW9Zvh1KX2JEiFlhBwHiskxagbOo6WjI5SQ_DYuB_RvJPiLEqKF_5ioPTil21opDKYqbQNJ0Vxs.D9hqKs4pYqWACQwb4f--Qy4PClUfu08EhAxIzZPkAuQ&dib_tag=se&keywords=bose%2Bquietcomfort%2Bultra%2Bgen%2B2&qid=1768005412&th=1",
     "price_history": [
       {
+        "timestamp": "2026-01-13T13:45:43.455593+11:00",
+        "price": 594.96,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/bose-qc-ultra-2-black_20260113_134543.png"
+      },
+      {
         "timestamp": "2026-01-12T13:52:32.196780+11:00",
         "price": 629.95,
         "currency": "AUD",
@@ -43,12 +50,19 @@
       "price": 594.96,
       "timestamp": "2026-01-10T14:35:58.575087+11:00"
     },
-    "last_checked": "2026-01-12T13:52:32.196780+11:00"
+    "last_checked": "2026-01-13T13:45:43.455593+11:00"
   },
   "bose-qc-ultra-2-driftwood-sand": {
     "name": "bose quietcomfort ultra 2 driftwood sand",
     "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKQ2FG6",
     "price_history": [
+      {
+        "timestamp": "2026-01-13T13:46:10.173351+11:00",
+        "price": 594.96,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/bose-qc-ultra-2-driftwood-sand_20260113_134609.png"
+      },
       {
         "timestamp": "2026-01-12T13:53:04.364811+11:00",
         "price": 629.95,
@@ -82,12 +96,19 @@
       "price": 594.96,
       "timestamp": "2026-01-10T19:42:18.948618+11:00"
     },
-    "last_checked": "2026-01-12T13:53:04.364811+11:00"
+    "last_checked": "2026-01-13T13:46:10.173351+11:00"
   },
   "bose-qc-ultra-2-white-smoke": {
     "name": "bose quietcomfort ultra 2 white smoke",
     "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKRX5G9",
     "price_history": [
+      {
+        "timestamp": "2026-01-13T13:46:35.837707+11:00",
+        "price": 594.96,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/bose-qc-ultra-2-white-smoke_20260113_134635.png"
+      },
       {
         "timestamp": "2026-01-12T13:53:31.946302+11:00",
         "price": 629.96,
@@ -121,12 +142,19 @@
       "price": 594.96,
       "timestamp": "2026-01-10T19:42:53.506944+11:00"
     },
-    "last_checked": "2026-01-12T13:53:31.946302+11:00"
+    "last_checked": "2026-01-13T13:46:35.837707+11:00"
   },
   "DJI-Osmo-Pocket-3-Creator-Combo": {
     "name": "DJI Osmo Pocket 3 Creator Combo",
     "url": "https://www.amazon.com.au/gp/product/B0CG19FGQ5?smid=A2K69GP4EI3XWZ",
     "price_history": [
+      {
+        "timestamp": "2026-01-13T13:47:08.964466+11:00",
+        "price": 866.65,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/DJI-Osmo-Pocket-3-Creator-Combo_20260113_134708.png"
+      },
       {
         "timestamp": "2026-01-12T13:54:06.204415+11:00",
         "price": 35.99,
@@ -139,12 +167,19 @@
       "price": 35.99,
       "timestamp": "2026-01-12T13:54:06.204415+11:00"
     },
-    "last_checked": "2026-01-12T13:54:06.204415+11:00"
+    "last_checked": "2026-01-13T13:47:08.964466+11:00"
   },
   "Insta360-GO-3S-128GB-White": {
     "name": "Insta360 GO 3S - 128 GB White 4K Tiny Portable Vlogging Camera",
     "url": "https://www.amazon.com.au/dp/B0D3X3WS5C",
     "price_history": [
+      {
+        "timestamp": "2026-01-13T13:47:36.626660+11:00",
+        "price": 615.99,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/Insta360-GO-3S-128GB-White_20260113_134736.png"
+      },
       {
         "timestamp": "2026-01-12T13:54:36.366810+11:00",
         "price": 615.99,
@@ -157,6 +192,6 @@
       "price": 615.99,
       "timestamp": "2026-01-12T13:54:36.366810+11:00"
     },
-    "last_checked": "2026-01-12T13:54:36.366810+11:00"
+    "last_checked": "2026-01-13T13:47:36.626660+11:00"
   }
 }
