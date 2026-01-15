@@ -4,6 +4,13 @@
     "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKR293G",
     "price_history": [
       {
+        "timestamp": "2026-01-15T13:47:12.544740+11:00",
+        "price": 594.96,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/bose-qc-ultra-2-black_20260115_134711.png"
+      },
+      {
         "timestamp": "2026-01-14T13:51:19.748290+11:00",
         "price": 629.95,
         "currency": "AUD",
@@ -57,12 +64,19 @@
       "price": 594.96,
       "timestamp": "2026-01-10T14:35:58.575087+11:00"
     },
-    "last_checked": "2026-01-14T13:51:19.748290+11:00"
+    "last_checked": "2026-01-15T13:47:12.544740+11:00"
   },
   "bose-qc-ultra-2-driftwood-sand": {
     "name": "bose quietcomfort ultra 2 driftwood sand",
     "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKQ2FG6",
     "price_history": [
+      {
+        "timestamp": "2026-01-15T13:47:40.243563+11:00",
+        "price": 594.96,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/bose-qc-ultra-2-driftwood-sand_20260115_134739.png"
+      },
       {
         "timestamp": "2026-01-14T13:51:50.668852+11:00",
         "price": 629.95,
@@ -110,12 +124,19 @@
       "price": 594.96,
       "timestamp": "2026-01-10T19:42:18.948618+11:00"
     },
-    "last_checked": "2026-01-14T13:51:50.668852+11:00"
+    "last_checked": "2026-01-15T13:47:40.243563+11:00"
   },
   "bose-qc-ultra-2-white-smoke": {
     "name": "bose quietcomfort ultra 2 white smoke",
     "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKRX5G9",
     "price_history": [
+      {
+        "timestamp": "2026-01-15T13:48:15.915268+11:00",
+        "price": 594.96,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/bose-qc-ultra-2-white-smoke_20260115_134815.png"
+      },
       {
         "timestamp": "2026-01-14T13:52:17.617876+11:00",
         "price": 629.96,
@@ -163,12 +184,19 @@
       "price": 594.96,
       "timestamp": "2026-01-10T19:42:53.506944+11:00"
     },
-    "last_checked": "2026-01-14T13:52:17.617876+11:00"
+    "last_checked": "2026-01-15T13:48:15.915268+11:00"
   },
   "DJI-Osmo-Pocket-3-Creator-Combo": {
     "name": "DJI Osmo Pocket 3 Creator Combo",
     "url": "https://www.amazon.com.au/gp/product/B0CG19FGQ5?smid=A2K69GP4EI3XWZ",
     "price_history": [
+      {
+        "timestamp": "2026-01-15T13:48:47.986404+11:00",
+        "price": 848.46,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/DJI-Osmo-Pocket-3-Creator-Combo_20260115_134847.png"
+      },
       {
         "timestamp": "2026-01-14T13:52:47.044092+11:00",
         "price": 848.46,
@@ -188,12 +216,19 @@
       "price": 848.46,
       "timestamp": "2026-01-14T13:52:47.044092+11:00"
     },
-    "last_checked": "2026-01-14T13:52:47.044092+11:00"
+    "last_checked": "2026-01-15T13:48:47.986404+11:00"
   },
   "Insta360-GO-3S-128GB-White": {
     "name": "Insta360 GO 3S - 128 GB White 4K Tiny Portable Vlogging Camera",
     "url": "https://www.amazon.com.au/dp/B0D3X3WS5C",
     "price_history": [
+      {
+        "timestamp": "2026-01-15T13:49:21.024018+11:00",
+        "price": 615.99,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/Insta360-GO-3S-128GB-White_20260115_134920.png"
+      },
       {
         "timestamp": "2026-01-14T13:53:18.395555+11:00",
         "price": 615.99,
@@ -220,6 +255,6 @@
       "price": 615.99,
       "timestamp": "2026-01-12T13:54:36.366810+11:00"
     },
-    "last_checked": "2026-01-14T13:53:18.395555+11:00"
+    "last_checked": "2026-01-15T13:49:21.024018+11:00"
   }
 }
