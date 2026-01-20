@@ -207,7 +207,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-prices
     steps:
-      - Delete screenshots older than 30 days
+      - Delete screenshots older than 7 days (based on git commit time)
       - Commit cleanup
       - Push changes (with [skip ci])
 ```
@@ -412,7 +412,7 @@ python src/main.py
 
 ## Implemented Enhancements
 
-- ✅ Screenshot cleanup automation (>30 days) - automated in workflow
+- ✅ Screenshot cleanup automation (>7 days, based on git commit time) - automated in workflow
 - ✅ Batch email alerts (multiple ATLs in single email)
 - ✅ Test email functionality (standalone workflow)
 - ✅ Sydney timezone handling

@@ -185,7 +185,7 @@ The `data/price_history.json` file is automatically managed by the script. It st
   - Updates price history
   - Sends email alerts for all-time lows
   - Commits updates back to repository
-  - Cleans up screenshots older than 30 days
+  - Cleans up screenshots older than 7 days (based on git commit time)
 - **Artifacts:** Uploads logs for 30 days
 
 ### Test Email Workflow (Manual)
@@ -310,14 +310,18 @@ schedule:
 
 Screenshots are **automatically cleaned up** by the GitHub Actions workflow:
 - The `cleanup-old-screenshots` job runs after each price check
-- Deletes screenshots older than 30 days
+- Deletes screenshots older than 7 days (based on git commit time)
 - Automatically commits changes to the repository
 
 Manual cleanup (if needed):
 
 ```bash
-# Delete screenshots older than 30 days locally
-find screenshots -name "*.png" -mtime +30 -delete
+# Delete screenshots older than 7 days locally (based on git commit time)
+CUTOFF=$(date -u -d '7 days ago' +%s)
+find screenshots -name "*.png" -type f | while read file; do
+  COMMIT_TIME=$(git log -1 --format="%at" -- "$file" 2>/dev/null)
+  [ -n "$COMMIT_TIME" ] && [ "$COMMIT_TIME" -lt "$CUTOFF" ] && rm "$file"
+done
 git add screenshots/
 git commit -m "chore: clean up old screenshots"
 git push
