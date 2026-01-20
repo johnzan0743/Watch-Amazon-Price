@@ -86,6 +86,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main  # Ensure we get the latest commit from check-prices job
+          fetch-depth: 0  # Full history needed for git log timestamps
 
       - name: Delete screenshots older than 7 days
         run: |
@@ -101,7 +102,7 @@ jobs:
 
           # Find and delete screenshots based on git commit time
           DELETED_COUNT=0
-          find screenshots -name "*.png" -type f 2>/dev/null | while read file; do
+          for file in $(find screenshots -name "*.png" -type f 2>/dev/null); do
             # Get the commit timestamp of when this file was last added
             COMMIT_TIME=$(git log -1 --format="%at" -- "$file" 2>/dev/null)
 
