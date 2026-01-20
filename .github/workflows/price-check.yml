@@ -87,16 +87,16 @@ jobs:
         with:
           ref: main  # Ensure we get the latest commit from check-prices job
 
-      - name: Delete screenshots older than 30 days
+      - name: Delete screenshots older than 7 days
         run: |
-          echo "Searching for screenshots older than 30 days..."
+          echo "Searching for screenshots older than 7 days..."
 
           # Count files before deletion
           BEFORE_COUNT=$(find screenshots -name "*.png" -type f 2>/dev/null | wc -l || echo "0")
           echo "Total screenshots before cleanup: $BEFORE_COUNT"
 
-          # Find and delete screenshots older than 30 days
-          DELETED_COUNT=$(find screenshots -name "*.png" -type f -mtime +30 -delete -print 2>/dev/null | wc -l || echo "0")
+          # Find and delete screenshots older than 7 days
+          DELETED_COUNT=$(find screenshots -name "*.png" -type f -mtime +7 -delete -print 2>/dev/null | wc -l || echo "0")
 
           # Count files after deletion
           AFTER_COUNT=$(find screenshots -name "*.png" -type f 2>/dev/null | wc -l || echo "0")
@@ -117,6 +117,6 @@ jobs:
             echo "No old screenshots to clean up"
           else
             DELETED_FILES=$(git diff --staged --summary | grep -c "delete" || echo "0")
-            git commit -m "chore: cleanup screenshots older than 30 days [skip ci] - removed ${DELETED_FILES} file(s)"
+            git commit -m "chore: cleanup screenshots older than 7 days [skip ci] - removed ${DELETED_FILES} file(s)"
             git push
           fi
