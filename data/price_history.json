@@ -4,6 +4,13 @@
     "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKR293G",
     "price_history": [
       {
+        "timestamp": "2026-05-30T13:15:50.277547+10:00",
+        "price": 559.96,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/bose-qc-ultra-2-black_20260530_131550.png"
+      },
+      {
         "timestamp": "2026-05-29T13:18:24.804459+10:00",
         "price": 559.96,
         "currency": "AUD",
@@ -1023,7 +1030,7 @@
       "price": 559.96,
       "timestamp": "2026-04-27T13:15:59.105882+10:00"
     },
-    "last_checked": "2026-05-29T13:18:24.804459+10:00"
+    "last_checked": "2026-05-30T13:15:50.277547+10:00"
   },
   "bose-qc-ultra-2-driftwood-sand": {
     "name": "bose quietcomfort ultra 2 driftwood sand",
@@ -2049,6 +2056,13 @@
     "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKRX5G9",
     "price_history": [
       {
+        "timestamp": "2026-05-30T13:16:45.510969+10:00",
+        "price": 1018.3,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/bose-qc-ultra-2-white-smoke_20260530_131645.png"
+      },
+      {
         "timestamp": "2026-05-29T13:19:29.439856+10:00",
         "price": 559.96,
         "currency": "AUD",
@@ -3061,12 +3075,19 @@
       "price": 559.96,
       "timestamp": "2026-04-27T13:17:07.370310+10:00"
     },
-    "last_checked": "2026-05-29T13:19:29.439856+10:00"
+    "last_checked": "2026-05-30T13:16:45.510969+10:00"
   },
   "DJI-Osmo-Pocket-3-Creator-Combo": {
     "name": "DJI Osmo Pocket 3 Creator Combo",
     "url": "https://www.amazon.com.au/gp/product/B0CG19FGQ5?smid=A2K69GP4EI3XWZ",
     "price_history": [
+      {
+        "timestamp": "2026-05-30T13:17:58.374858+10:00",
+        "price": 856.71,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/DJI-Osmo-Pocket-3-Creator-Combo_20260530_131758.png"
+      },
       {
         "timestamp": "2026-05-29T13:20:26.479447+10:00",
         "price": 856.71,
@@ -4045,7 +4066,7 @@
       "price": 768.0,
       "timestamp": "2026-05-06T13:18:29.398241+10:00"
     },
-    "last_checked": "2026-05-29T13:20:26.479447+10:00"
+    "last_checked": "2026-05-30T13:17:58.374858+10:00"
   },
   "Insta360-GO-3S-128GB-White": {
     "name": "Insta360 GO 3S - 128 GB White 4K Tiny Portable Vlogging Camera",
@@ -5050,6 +5071,13 @@
     "url": "https://www.amazon.com.au/gp/product/B0DRCXL888",
     "price_history": [
       {
+        "timestamp": "2026-05-30T13:17:21.584240+10:00",
+        "price": 169.02,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/LEGO-42210-Fast-2-Furious-Nissan-Skyline-GT-R-(R34)-Car_20260530_131721.png"
+      },
+      {
         "timestamp": "2026-05-29T13:19:57.420155+10:00",
         "price": 169.02,
         "currency": "AUD",
@@ -5978,6 +6006,6 @@
       "price": 46.95,
       "timestamp": "2026-04-24T13:15:13.328099+10:00"
     },
-    "last_checked": "2026-05-29T13:19:57.420155+10:00"
+    "last_checked": "2026-05-30T13:17:21.584240+10:00"
   }
 }
