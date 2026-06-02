@@ -3117,6 +3117,13 @@
     "url": "https://www.amazon.com.au/gp/product/B0CG19FGQ5?smid=A2K69GP4EI3XWZ",
     "price_history": [
       {
+        "timestamp": "2026-06-02T13:22:03.146532+10:00",
+        "price": 849.0,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/DJI-Osmo-Pocket-3-Creator-Combo_20260602_132203.png"
+      },
+      {
         "timestamp": "2026-06-01T13:22:35.954954+10:00",
         "price": 856.71,
         "currency": "AUD",
@@ -4115,12 +4122,19 @@
       "price": 768.0,
       "timestamp": "2026-05-06T13:18:29.398241+10:00"
     },
-    "last_checked": "2026-06-01T13:22:35.954954+10:00"
+    "last_checked": "2026-06-02T13:22:03.146532+10:00"
   },
   "Insta360-GO-3S-128GB-White": {
     "name": "Insta360 GO 3S - 128 GB White 4K Tiny Portable Vlogging Camera",
     "url": "https://www.amazon.com.au/dp/B0D3X3WS5C",
     "price_history": [
+      {
+        "timestamp": "2026-06-02T13:22:35.171920+10:00",
+        "price": 615.99,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/Insta360-GO-3S-128GB-White_20260602_132235.png"
+      },
       {
         "timestamp": "2026-06-01T13:23:10.224576+10:00",
         "price": 615.99,
@@ -5127,12 +5141,19 @@
       "price": 35.0,
       "timestamp": "2026-03-31T14:15:24.956663+11:00"
     },
-    "last_checked": "2026-06-01T13:23:10.224576+10:00"
+    "last_checked": "2026-06-02T13:22:35.171920+10:00"
   },
   "LEGO-42210-Fast-2-Furious-Nissan-Skyline-GT-R-(R34)-Car": {
     "name": "LEGO 42210 Fast & Furious Nissan Skyline GT-R (R34) Car",
     "url": "https://www.amazon.com.au/gp/product/B0DRCXL888",
     "price_history": [
+      {
+        "timestamp": "2026-06-02T13:21:30.830544+10:00",
+        "price": 160.34,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/LEGO-42210-Fast-2-Furious-Nissan-Skyline-GT-R-(R34)-Car_20260602_132130.png"
+      },
       {
         "timestamp": "2026-06-01T13:22:00.317060+10:00",
         "price": 160.26,
@@ -6083,6 +6104,6 @@
       "price": 46.95,
       "timestamp": "2026-04-24T13:15:13.328099+10:00"
     },
-    "last_checked": "2026-06-01T13:22:00.317060+10:00"
+    "last_checked": "2026-06-02T13:21:30.830544+10:00"
   }
 }
