@@ -4,6 +4,13 @@
     "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKR293G",
     "price_history": [
       {
+        "timestamp": "2026-10-17T17:45:31.480625+11:00",
+        "price": 246.99,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/bose-qc-ultra-2-black_20261017_174531.png"
+      },
+      {
         "timestamp": "2026-10-16T17:53:23.190225+11:00",
         "price": 439.25,
         "currency": "AUD",
@@ -1961,12 +1968,19 @@
       "price": 4.25,
       "timestamp": "2026-09-14T17:44:52.293754+10:00"
     },
-    "last_checked": "2026-10-16T17:53:23.190225+11:00"
+    "last_checked": "2026-10-17T17:45:31.480625+11:00"
   },
   "bose-qc-ultra-2-driftwood-sand": {
     "name": "bose quietcomfort ultra 2 driftwood sand",
     "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKQ2FG6",
     "price_history": [
+      {
+        "timestamp": "2026-10-17T17:46:01.326021+11:00",
+        "price": 246.99,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/bose-qc-ultra-2-driftwood-sand_20261017_174600.png"
+      },
       {
         "timestamp": "2026-10-16T17:54:01.184904+11:00",
         "price": 21.87,
@@ -3925,12 +3939,19 @@
       "price": 6.17,
       "timestamp": "2026-09-13T17:20:06.729427+10:00"
     },
-    "last_checked": "2026-10-16T17:54:01.184904+11:00"
+    "last_checked": "2026-10-17T17:46:01.326021+11:00"
   },
   "bose-qc-ultra-2-white-smoke": {
     "name": "bose quietcomfort ultra 2 white smoke",
     "url": "https://www.amazon.com.au/Bose-QuietComfort-Bluetooth-Headphones-Cancelling/dp/B0FDKRX5G9",
     "price_history": [
+      {
+        "timestamp": "2026-10-17T17:46:31.637658+11:00",
+        "price": 246.99,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/bose-qc-ultra-2-white-smoke_20261017_174631.png"
+      },
       {
         "timestamp": "2026-10-16T17:54:28.886615+11:00",
         "price": 21.87,
@@ -5882,12 +5903,19 @@
       "price": 10.83,
       "timestamp": "2026-09-03T17:02:56.569200+10:00"
     },
-    "last_checked": "2026-10-16T17:54:28.886615+11:00"
+    "last_checked": "2026-10-17T17:46:31.637658+11:00"
   },
   "DJI-Osmo-Pocket-3-Creator-Combo": {
     "name": "DJI Osmo Pocket 3 Creator Combo",
     "url": "https://www.amazon.com.au/gp/product/B0CG19FGQ5?smid=A2K69GP4EI3XWZ",
     "price_history": [
+      {
+        "timestamp": "2026-10-17T17:47:27.525721+11:00",
+        "price": 439.25,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/DJI-Osmo-Pocket-3-Creator-Combo_20261017_174727.png"
+      },
       {
         "timestamp": "2026-10-16T17:55:27.016252+11:00",
         "price": 21.87,
@@ -7818,12 +7846,19 @@
       "price": 9.99,
       "timestamp": "2026-08-31T18:26:27.385406+10:00"
     },
-    "last_checked": "2026-10-16T17:55:27.016252+11:00"
+    "last_checked": "2026-10-17T17:47:27.525721+11:00"
   },
   "Insta360-GO-3S-128GB-White": {
     "name": "Insta360 GO 3S - 128 GB White 4K Tiny Portable Vlogging Camera",
     "url": "https://www.amazon.com.au/dp/B0D3X3WS5C",
     "price_history": [
+      {
+        "timestamp": "2026-10-17T17:47:59.227084+11:00",
+        "price": 439.25,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/Insta360-GO-3S-128GB-White_20261017_174758.png"
+      },
       {
         "timestamp": "2026-10-16T17:56:02.305779+11:00",
         "price": 21.87,
@@ -9747,12 +9782,19 @@
       "price": 7.51,
       "timestamp": "2026-09-09T17:16:23.150471+10:00"
     },
-    "last_checked": "2026-10-16T17:56:02.305779+11:00"
+    "last_checked": "2026-10-17T17:47:59.227084+11:00"
   },
   "LEGO-42210-Fast-2-Furious-Nissan-Skyline-GT-R-(R34)-Car": {
     "name": "LEGO 42210 Fast & Furious Nissan Skyline GT-R (R34) Car",
     "url": "https://www.amazon.com.au/gp/product/B0DRCXL888",
     "price_history": [
+      {
+        "timestamp": "2026-10-17T17:47:01.626556+11:00",
+        "price": 246.99,
+        "currency": "AUD",
+        "available": true,
+        "screenshot": "screenshots/LEGO-42210-Fast-2-Furious-Nissan-Skyline-GT-R-(R34)-Car_20261017_174701.png"
+      },
       {
         "timestamp": "2026-10-16T17:54:58.769113+11:00",
         "price": 21.87,
@@ -11627,6 +11669,6 @@
       "price": 6.17,
       "timestamp": "2026-09-13T17:21:05.714660+10:00"
     },
-    "last_checked": "2026-10-16T17:54:58.769113+11:00"
+    "last_checked": "2026-10-17T17:47:01.626556+11:00"
   }
 }
